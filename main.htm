@@ -1,0 +1,415 @@
+<HTML>
+<HEAD><TITLE></TITLE>
+    
+   <STYLE TYPE="text/css">
+	#idM100 { font-family:"ＭＳ Ｐ明朝"; font-weight:bold; 
+		  font-size:30pt; color : #0055AD }
+	#idM101 { font-family:Times; font-weight:bold; font-style:italic;
+		  font-size:20pt; color : #00BFFF;
+		  margin-top : -10px; margin-left:40px}
+	#idM102 { font-family:"ＭＳ Ｐゴシック";  font-size:10.5pt; color : black }	
+
+	#idM102_title {font-family:"ＭＳ Ｐゴシック";  font-size:9pt; color : black }	
+	#idM102_date2 {  font-family:"ＭＳ Ｐゴシック";  font-size:9pt; color : black }	
+	#idM102_category { font-family:"ＭＳ Ｐゴシック";  font-size:9pt; color : black }	
+	#idM102_related { font-family:"ＭＳ Ｐゴシック";  font-size:9pt; color : black }	
+	#idM102_annotation { font-family:"ＭＳ Ｐゴシック";  font-size:9pt; color : black }
+	#idM102_textfile { font-family:"ＭＳ Ｐゴシック";  font-size:9pt; color : black }	
+	#idM102_imagefile { font-family:"ＭＳ Ｐゴシック";  font-size:9pt; color : black }	
+	#idM103 { font-family:"ＭＳ Ｐ明朝"; font-weight:bold; font-size:9pt; color : #0055AD }
+		    
+	BODY { background : #FFF8DC }
+	.font1 { font-family:"ＭＳ Ｐ明朝" }
+	  #td1    {text-align:left; font-size:10.5pt; border:none;}
+      xmp   {font-size:120%; }
+      pre   {font-size:120%;}
+ </STYLE>
+</HEAD>
+
+<style type="text/css">
+<!--
+#txtarea {
+ width : 1024px; /*テキストエリアの幅*/
+ height : 600px;/*テキストエリアの高さ*/
+}
+-->
+</style>
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--   
+//-------------------------------------------------------------
+//	外部変数
+//-------------------------------------------------------------
+var	xmldoc;
+var xmlNews;	//新聞ノードゲット
+var	iIndex;		//新聞データインデックス
+var	iNewsMax;	//新聞データ数
+var	dtIndex;	//インデックスデータ
+var	iSortMode;	//ソートモード
+
+//-------------------------------------------------------------
+//	ＸＭＬデータロード処理
+//-------------------------------------------------------------
+function window_onload(){
+	xmldoc=new ActiveXObject("MSXML2.DOMDocument");
+	xmldoc.async=false;
+	xmldoc.load("newsdb.xml");
+
+	xmlNews = xmldoc.getElementsByTagName("information");	//新聞ノードゲット
+
+	//インデックスデータ作成
+	dtIndex = new Array();
+	for(i = 0;i < xmlNews.length;i++)	{
+		var sNews = xmlNews[i].getElementsByTagName("newspaper")[0].getAttributeNode("id").value;	//新聞名称
+		var	sDate = xmlNews[i].getElementsByTagName("date")[0].text;	//新聞日付
+		dtIndex[i] = new setIndexData(sNews,sDate,i);
+	}
+
+	iSortMode	= -1;
+	iIndex 		= 0;
+	iNewsMax	= xmlNews.length;
+}
+
+//--------------------------------------------------------------
+//	新聞インデックスゲット処理
+//--------------------------------------------------------------
+function getNewsIndex()	{
+	if((iIndex) >= iNewsMax)	{	//データ数に達したか？
+		iIndex	= 0;	//インデックスクリア
+		return(-1);
+	}
+
+	return(dtIndex[iIndex++].iNo);
+}
+
+//--------------------------------------------------------------
+//	新聞インデックスデータ処理
+//--------------------------------------------------------------
+function setIndexData(sNews,sDate,iNo) {
+    this.sNews	= sNews;
+    this.sDate	= sDate;
+	this.iNo	= iNo;
+}
+
+//--------------------------------------------------------------
+//	新聞社名順ソート処理
+//--------------------------------------------------------------
+function comareNews(a, b) {
+	var sA = a.sNews.toLowerCase();
+	var sB = b.sNews.toLowerCase();
+	if (sA < sB) {return -1}
+	if (sA > sB) {return 1}
+	return 0;
+}
+
+//--------------------------------------------------------------
+//	日付順ソート処理
+//--------------------------------------------------------------
+function comareDate(a, b) {
+	var sA = a.sDate.toLowerCase();
+	var sB = b.sDate.toLowerCase();
+	if (sA < sB) {return -1}
+	if (sA > sB) {return 1}
+	return 0;
+}
+
+//--------------------------------------------------------------
+//	新聞インデックスゲット作成処理
+//--------------------------------------------------------------
+function makeNewsIndex()	{
+
+	if(iSortMode != 1)	{	//新聞社順以外のとき？
+		if(document.ckForm2.elements[1].checked == true)	{	//新聞社順に表示？
+			iSortMode	= 1;
+			iIndex 		= 0;
+			dtIndex.sort(comareDate);	//日付でソート
+			dtIndex.sort(comareNews);	//新聞社名でソート
+		}
+	}
+
+	if(iSortMode != 2)	{	//新聞社順以外のとき？
+		if(document.ckForm2.elements[2].checked == true)	{	//日付順に表示？
+			iSortMode	= 2;
+			iIndex 		= 0;
+			dtIndex.sort(comareDate);	//日付でソート
+		}
+	}
+}
+
+//---------------------------------------------------------------
+//	検索ボタン押下処理
+//---------------------------------------------------------------
+function DoQuery(btnNo){
+	var	iNo;
+	var	sHtml;
+
+	makeNewsIndex();	//新聞インデックスゲット作成処理
+
+	document.getElementById("showArea").innerHTML = "";	//HTMLエリアクリア
+
+	sHtml	= dispTitleData();							//記事タイトル作成処理
+
+	for(;;)	{	//無限ループ
+		iNo = getNewsIndex();		//新聞インデックスGET
+		if(iNo == -1)	{
+			//document.getElementById("showArea").innerHTML = "<H1>【データ終了】</H1>";	//HTMLエリアクリア
+			break;
+		}
+
+		var sPaperName	= xmlNews[iNo].getElementsByTagName("newspaper")[0].getAttributeNode("id").value;	//新聞名称
+		var	sDate		= xmlNews[iNo].getElementsByTagName("date")[0].text;	//新聞日付
+		var	xmlSend		= xmlNews[iNo].getElementsByTagName("send");			//電報送信内容
+		sHtml	+= dispNewsData(xmlSend,sPaperName,sDate); 	//記事データ処理
+	}
+
+	sHtml	+= "</TABLE>" + "<BR>";
+	document.getElementById("showArea").innerHTML += sHtml;
+}
+
+//---------------------------------------------------------------
+//	テーブルタイトル作成
+//---------------------------------------------------------------
+function dispTitleData()	{
+	//	テーブル名称表示
+
+	var sTitle = "<TABLE BORDER=2 cellpadding=0 cellspacing=0 >" +
+						 "<TR style=background-color:#DDDDDD;>";
+
+	//	テーブルタイトル表示
+
+
+	sTitle += "<TD id=idM102 align=center><nobr>新聞社</nobr></TD>";	//記事タイトル
+
+
+	if(document.ckForm.elements[0].checked == true)	{	//記事タイトルあり？
+		sTitle += "<TD id=idM102 align=center><nobr>記事タイトル</nobr></TD>";	//記事タイトル
+	}
+
+	if(document.ckForm.elements[1].checked == true)	{	//日付ありか？
+		sTitle += "<TD id=idM102 align=center><nobr>日付</nobr></TD>";//日付
+	}
+
+	if(document.ckForm.elements[2].checked == true)	{	//分野ありか？
+		sTitle += "<TD id=idM102 align=center><nobr>分野</nobr></TD>";//分野
+	}
+
+	if(document.ckForm.elements[3].checked == true)	{	//関連記事ありか？
+		sTitle += "<TD id=idM102 align=center><nobr>関連記事</nobr></TD>";//関連記事
+	}
+
+	if(document.ckForm.elements[4].checked == true)	{	//注釈ありか？
+		sTitle += "<TD id=idM102 align=center><nobr>注釈</nobr></TD>";//注釈
+	}
+	
+	if(document.ckForm.elements[5].checked == true)	{	//本文ありか？
+		sTitle += "<TD id=idM102 align=center><nobr>本文ファイル</nobr></TD>";//本文ファイル
+	}
+
+	if(document.ckForm.elements[6].checked == true)	{	//画像ありか？
+		sTitle += "<TD id=idM102 align=center><nobr>画像ファイル</nobr></TD>";//画像ファイル
+	}	
+	
+	sTitle += "</TR>";
+
+	return	sTitle;
+}
+
+//---------------------------------------------------------------
+//	テーブルデータ作成
+//---------------------------------------------------------------
+function dispNewsData(xmlSend,newspaper,date)	{
+	var	sText = "";
+
+	for(var i=0;i < xmlSend.length;i++)	{
+		sText += "<TR>";
+
+		sText += "<TD id=idM102>" + newspaper + "</TD>";
+
+		if(document.ckForm.elements[0].checked == true)	{	//記事タイトルあり？
+			var sTitle2 = xmlSend[i].getElementsByTagName("title")[0].text;	//記事タイトル
+			sText += "<TD id=idM102>" + sTitle2 + "</TD>";
+		}
+
+		if(document.ckForm.elements[1].checked == true)	{	//日付ありか？
+			//var sDate	= xmlSend[i].getElementsByTagName("date2")[0].text;	//日付
+			sText += "<TD id=idM102>" + date + "</TD>";
+		}
+
+		if(document.ckForm.elements[2].checked == true)	{	//分野ありか？
+			var sCategory	= xmlSend[i].getElementsByTagName("category")[0].text;	//分野
+			sText += "<TD id=idM102>" + sCategory + "</TD>";
+		}
+
+		if(document.ckForm.elements[3].checked == true)	{	//関連記事？
+			var sRelated = xmlSend[i].getElementsByTagName("related")[0].text;	//関連記事
+			sText += "<TD id=idM102>" + sRelated + "</TD>";
+		}
+
+		if(document.ckForm.elements[4].checked == true)	{	//注釈ありか？
+			var sAnnotation = xmlSend[i].getElementsByTagName("annotation")[0].text;//注釈
+			sText += "<TD id=idM102>" + sAnnotation + "</TD>";
+		}	
+
+		if(document.ckForm.elements[5].checked == true)	{	//本文あり？
+			var sTextfile	= xmlSend[i].getElementsByTagName("textfile")[0].text;	//本文ファイル
+			sText += "<TD id=idM102>" + getTextHtml(sTextfile) + "</TD>";
+		}
+
+		if(document.ckForm.elements[6].checked == true)	{	//画像ありか？
+			var pImagefile = xmlSend[i].getElementsByTagName("imagefile");	//画像ファイル
+			sText += "<TD id=idM102>" + getImageHtml(pImagefile) + "</TD>";
+		}
+		
+		sText += "</TR>";
+	}
+
+	return sText;
+}
+
+//----------------------------------------------------------------
+//	イメージ表示HTML作成
+//----------------------------------------------------------------
+function getTextHtml(sTextFile)	{
+	var	sWork 	= "<A Href=Texts/" + sTextFile + 
+							" Target=_blank>" + sTextFile + "</A>"; 
+	return	sWork
+}
+
+//----------------------------------------------------------------
+//	イメージ表示HTML作成
+//----------------------------------------------------------------
+function getImageHtml(pImageFile)	{
+	var ImgHtml = "";
+	
+	for(var j = 0;j < pImageFile.length;j++)	{
+		var	sWork 	= "<A Href=images/" + pImageFile[j].text + 
+							" Target=_blank>" + pImageFile[j].text + "</A>"; 
+		
+		if(j == 0)	{
+			 ImgHtml += sWork;
+		}
+		else	{
+			 ImgHtml += "，" + sWork;
+		}
+	}
+
+	return	ImgHtml;
+}
+
+//----------------------------------------------------------------
+//	イメージ名の取出し
+//----------------------------------------------------------------
+function getImageName(sFileName)	{
+	var	iStart	= sFileName.indexOf("-");
+	var	iEnd   	= sFileName.lastIndexOf(".");
+	return(sFileName.substr(iStart+1,iEnd - (iStart+1)));
+}
+
+//---------------------------------------------------------------
+//	チェックボックス処理（現状ダミー）
+//---------------------------------------------------------------
+function click_checkbox(){
+}
+
+function ChangeOrder(iNo){
+}
+
+//-->	
+</SCRIPT>
+<!---------------------------------------------------------------------------------------------------------------------->
+
+<xml id="newsdb_style"  src="newsdb.xsl"></xml>
+
+<span style="{display:none;}" id="FORM">
+
+<form name="ckForm2" action="">
+<table valign="bottom">
+<tr>
+
+	<td><SPAN style="FONT-WEIGHT: bold" ID=key1>新聞社名： </SPAN></td>
+	<td>
+<!--
+	<select NAME="TopicLIST" onchange="SelectTopic(this.selectedIndex)">
+-->
+	<select NAME="TopicLIST">
+	<option value="0" >全社
+    </select></td>
+
+	<td width="40"></td> 
+	<td><b>表示順番：</b><td>
+	<td id="td1" width="160" >
+    	<nobr><input type="radio"  name="selectorder" value="1" checked onclick="ChangeOrder(1)">新聞→日付順検索 </input></nobr>
+	</td>
+	<td id="td1" width="160">
+    	<nobr><input type="radio"  name="selectorder" value="0"  onclick="ChangeOrder(0)">日付→新聞順検索 </input></nobr>
+    </td>
+</tr>
+</table>
+
+</tr>
+</table>
+</form>
+
+<BR>
+
+<nobr>
+表示項目をチェックしてください：
+</nobr>
+
+<form name="ckForm" action="">
+
+<table border="1" >
+<tr>
+<td id="td1">
+<nobr><INPUT type="checkbox" id="idCheckBox" onclick="click_checkbox()" checked name="title">記事タイトル　　</INPUT></nobr>
+</td>
+<td id="td1">
+<nobr><INPUT type="checkbox" id="idCheckBox" onclick="click_checkbox()" checked name="date2">日付　　</INPUT></nobr>
+</td>
+<td id="td1">
+<nobr><INPUT type="checkbox" id="idCheckBox" onclick="click_checkbox()" checked name="category">分野　　</INPUT></nobr>
+</td>
+<td id="td1">
+<nobr><INPUT type="checkbox" id="idCheckBox" onclick="click_checkbox()" checked name="related">関連記事　　</INPUT></nobr>
+</td>
+<td id="td1">
+<nobr><INPUT type="checkbox" id="idCheckBox" onclick="click_checkbox()" checked checked name="annotation">注釈　　</INPUT></nobr>
+</td>
+<td id="td1">
+<nobr><INPUT type="checkbox" id="idCheckBox" onclick="click_checkbox()" checked name="textfile">本文ファイル　　</INPUT></nobr>
+</td>
+<td id="td1">
+<nobr><INPUT type="checkbox" id="idCheckBox" onclick="click_checkbox()" checked name="imagefile">画像ファイル　　</INPUT></nobr>
+</td>
+</tr>
+</table>
+<br>
+
+</form>
+
+<INPUT TYPE=button NAME="Query" VALUE=" 検 索 "  onclick="DoQuery(1)">
+
+
+<BR>
+
+<!--
+</form>
+-->
+
+</span>
+
+<DIV id="EarthQuakeSPAN"></DIV>
+
+
+</BODY>
+
+<body onload="window_onload()">
+<HR>
+<h2>新聞データの表示</h2>
+<!-- ol -->
+	<div id="showArea"></div>
+<!-- /ol -->
+</body>
+
+</HTML>
+

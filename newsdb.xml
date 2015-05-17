@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<newsdb xmlns:dt="urn:schemas-microsoft-com:datatypes">
+  <newspapers>
+    <newspaper id="1">朝日新聞</newspaper>
+    <newspaper id="2">毎日新聞</newspaper>
+    <newspaper id="3">ロイター</newspaper>
+	<newspaper id="4">ガジェット通信</newspaper>
+  </newspapers>
+
+<information>
+	<newspaper id="朝日新聞" />
+	<date>2015/5/3</date>
+	<news>
+		<send>
+			<title>＜ＪＲ四国＞毛虫大量発生で車輪空転、列車運休…高徳線</title>
+			<date2>2015年05年03日</date2>
+			<category>国内 交通 JR</category>
+			<related>行楽の前に野外の害虫から身を守る方法</related>
+			<annotation>虫が原因の列車の空転事故は良く有ります</annotation>
+			<textfile>NewsData001.txt</textfile>
+			<imagefile>Image001.jpg</imagefile>
+		</send>
+
+	</news>
+</information>
+
+
+<information>
+	<newspaper id="ロイター" />
+	<date>2015/4/29</date>
+	<news>
+		<send>
+			<title>サウジ、世代交代</title>
+			<date2>2015年04年29日</date2>
+			<category>国際 中東情勢</category>
+			<related>アブドラ国王の死去</related>
+			<annotation>世界一の産油国の情勢です</annotation>
+			<textfile>NewsData002.txt</textfile>
+			<imagefile></imagefile>
+		</send>
+
+	</news>
+</information>
+
+<information>
+	<newspaper id="朝日新聞" />
+	<date>2015/4/24</date>
+	<news>
+		<send>
+			<title>もう便乗？　「アップルウォッチ」の詐欺サイト</title>
+			<date2>2015年04年24日</date2>
+			<category>国内 犯罪</category>
+			<related>アップルウォッチ発売　しばらくは品薄に、価格は…</related>
+			<annotation>詐欺には気を付けましょう</annotation>
+			<textfile>NewsData003.txt</textfile>
+			<imagefile></imagefile>
+		</send>
+
+	</news>
+</information>
+
+<information>
+	<newspaper id="毎日新聞" />
+	<date>2015/4/29</date>
+	<news>
+		<send>
+			<title>＜新幹線運転見合わせ＞乗客は線路歩き駅へ　車内は蒸し風呂</title>
+			<date2>2015年04年29日</date2>
+			<category>国内 新幹線</category>
+			<related>【休日の新幹線直撃】東京駅の階段に座り、新幹線の運転再開を待つ人たち</related>
+			<annotation>新幹線もたまには故障する</annotation>
+			<textfile>NewsData004.txt</textfile>
+			<imagefile>Image004.jpg</imagefile>
+		</send>
+
+	</news>
+</information>
+
+<information>
+	<newspaper id="ガジェット通信" />
+	<date>2015/4/29</date>
+	<news>
+		<send>
+			<title>世界中のにゃんこ大集合！ 写真展「岩合光昭の世界ネコ歩き」開催</title>
+			<date2>2015年04年29日</date2>
+			<category>国内　海外　猫</category>
+			<related>池袋で岩合光昭の写真展「ねこ歩き」開催！ 大規模なネコグッズも展開</related>
+			<annotation>猫が可愛いです</annotation>
+			<textfile>NewsData005.txt</textfile>
+			<imagefile>Image005_1.jpg</imagefile>
+			<imagefile>Image005_2.jpg</imagefile>
+		</send>
+
+	</news>
+</information>
+
+</newsdb>
