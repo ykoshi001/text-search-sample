@@ -9,7 +9,7 @@
 
 <information>
 	<newspaper id="朝日新聞" />
-	<date>2015/5/3</date>
+	<date>2015/05/03</date>
 	<news>
 		<send>
 			<title>＜ＪＲ四国＞毛虫大量発生で車輪空転、列車運休…高徳線</title>
@@ -27,7 +27,7 @@
 
 <information>
 	<newspaper id="ロイター" />
-	<date>2015/4/29</date>
+	<date>2015/04/29</date>
 	<news>
 		<send>
 			<title>サウジ、世代交代</title>
@@ -44,7 +44,7 @@
 
 <information>
 	<newspaper id="朝日新聞" />
-	<date>2015/4/24</date>
+	<date>2015/04/24</date>
 	<news>
 		<send>
 			<title>もう便乗？　「アップルウォッチ」の詐欺サイト</title>
@@ -61,7 +61,7 @@
 
 <information>
 	<newspaper id="毎日新聞" />
-	<date>2015/4/29</date>
+	<date>2015/04/29</date>
 	<news>
 		<send>
 			<title>＜新幹線運転見合わせ＞乗客は線路歩き駅へ　車内は蒸し風呂</title>
@@ -78,7 +78,7 @@
 
 <information>
 	<newspaper id="ガジェット通信" />
-	<date>2015/4/29</date>
+	<date>2015/04/29</date>
 	<news>
 		<send>
 			<title>世界中のにゃんこ大集合！ 写真展「岩合光昭の世界ネコ歩き」開催</title>
@@ -89,6 +89,23 @@
 			<textfile>NewsData005.txt</textfile>
 			<imagefile>Image005_1.jpg</imagefile>
 			<imagefile>Image005_2.jpg</imagefile>
+		</send>
+
+	</news>
+</information>
+
+<information>
+	<newspaper id="NHK NEWS" />
+	<date>2015/05/18</date>
+	<news>
+		<send>
+			<title>大阪住民投票 反対多数 都構想実現せず</title>
+			<date2>2015年05年18日</date2>
+			<category>国内　政治　大阪</category>
+			<related>橋下市長が会見 政界引退の意向表明</related>
+			<annotation>大阪都構想は難しかったようです</annotation>
+			<textfile>NewsData006.txt</textfile>
+			<imagefile>Image006.jpg</imagefile>
 		</send>
 
 	</news>
